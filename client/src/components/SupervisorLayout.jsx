@@ -1,143 +1,109 @@
-import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Users,
-  CheckSquare,
-  LogOut,
-  Menu,
-  X,
-  Bell,
-  User
-} from "lucide-react";
-import { useState } from "react";
+import { ReactNode, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { LayoutDashboard, FileCheck, Users, Menu, X, LogOut, Bell, User } from 'lucide-react';
 
-const SupervisorLayout = ({ onLogout }) =>{
-  const location = useLocation();
-  const navigate = useNavigate();
+interface SupervisorLayoutProps {
+  children: ReactNode;
+}
+
+export default function SupervisorLayout({ children }: SupervisorLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
-  const navItems = [
-    { path: '/supervisor/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/supervisor/students', icon: Users, label: 'Student List' },
-    { path: '/supervisor/review', icon: CheckSquare, label: 'Review Submissions' },
+  const navigation = [
+    { name: 'Dashboard', href: '/supervisor/dashboard', icon: LayoutDashboard },
+    { name: 'Review Submissions', href: '/supervisor/review-submissions', icon: FileCheck },
+    { name: 'Student List', href: '/supervisor/students', icon: Users },
   ];
 
-   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    onLogout();
-    navigate("/login", { replace: true });
-  };
+  const isActive = (path: string) => location.pathname === path;
 
-    return (
+  return (
     <div className="min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 bg-green-600 text-white`}
-      >
-        <div className="h-full px-3 py-4 overflow-y-auto">
-          {/* Logo Section */}
-          <div className="flex items-center justify-between mb-8 px-2">
-            <span className="text-xl font-bold">Supervisor Portal</span>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="lg:hidden"
-              aria-label="Close sidebar"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+      <div
+        className={`fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden transition-opacity ${
+          sidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setSidebarOpen(false)}
+      />
 
-          {/* Navigation */}
-          <nav className="space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isActive ? 'bg-green-700' : 'hover:bg-green-500'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+      <aside className={`fixed top-0 left-0 z-50 h-screen w-64 bg-white shadow-lg transform transition-transform duration-300 lg:translate-x-0 ${
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <h1 className="text-xl font-bold text-gray-800">Supervisor Portal</h1>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden text-gray-600 hover:text-gray-800"
+          >
+            <X size={24} />
+          </button>
+        </div>
 
-          {/* Logout Button */}
-          <div className="absolute bottom-4 left-3 right-3">
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 px-3 py-2.5 w-full rounded-lg hover:bg-red-600 transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium">Logout</span>
-            </button>
-          </div>
+        <nav className="p-4 space-y-2">
+          {navigation.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                  active
+                    ? 'bg-blue-50 text-blue-700 font-semibold'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                <Icon size={20} />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+          <button className="flex items-center gap-3 px-4 py-3 w-full text-gray-700 hover:bg-gray-100 rounded-lg transition-all">
+            <LogOut size={20} />
+            <span>Logout</span>
+          </button>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <div className="lg:ml-64">
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
-          <div className="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-            {/* Mobile menu button */}
+      <div className="lg:pl-64">
+        <header className="sticky top-0 z-30 bg-white shadow-sm">
+          <div className="flex items-center justify-between px-6 py-4">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden"
-              aria-label="Open sidebar"
+              className="lg:hidden text-gray-600 hover:text-gray-800"
             >
-              <Menu className="w-6 h-6" />
+              <Menu size={24} />
             </button>
 
-            {/* Title */}
-            <h1 className="text-xl font-semibold text-gray-800">Supervisor Dashboard</h1>
+            <div className="flex-1 lg:flex-none" />
 
-            {/* User section */}
             <div className="flex items-center gap-4">
-              <button
-                className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
-                aria-label="Notifications"
-              >
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              <button className="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all">
+                <Bell size={20} />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
               </button>
 
-              <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
-                <div className="w-9 h-9 bg-green-800 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
+              <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all cursor-pointer">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                  <User size={18} className="text-white" />
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-sm font-medium text-gray-800">Jane Supervisor</p>
-                  <p className="text-xs text-gray-200">Supervisor ID: SUP001</p>
+                  <p className="text-sm font-semibold text-gray-800">Dr. Sarah Johnson</p>
+                  <p className="text-xs text-gray-500">Supervisor</p>
                 </div>
               </div>
             </div>
           </div>
         </header>
 
-        {/* Page content */}
-        <main className="p-4 sm:p-6 lg:p-8">
-          <Outlet />
+        <main className="p-6">
+          {children}
         </main>
       </div>
-
-      {/* Overlay for mobile sidebar */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        ></div>
-      )}
     </div>
   );
 }
-
-export default SupervisorLayout
