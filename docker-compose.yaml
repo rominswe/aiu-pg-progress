@@ -6,8 +6,10 @@ services:
     env_file:
       - ./server/.env
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   client:
     build: ./client
@@ -28,9 +30,15 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   redis:
-    image: redis:8.0-alpine
+    image: redis:7-alpine
     restart: always
     ports:
       - "6379:6379"

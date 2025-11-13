@@ -1,8 +1,8 @@
 // src/components/login/Login.jsx
 
 import { useState } from "react";
-import { FileText } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { FileText, Lock } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 import { API_BASE_URL } from "../../config";
 
 export default function Login({ onLogin }) {
@@ -34,6 +34,7 @@ export default function Login({ onLogin }) {
         // This is the code logic for redirecting based on role
         if (role === "student") navigate ("/student/dashboard");
         else if (role === "supervisor") navigate ("/supervisor/dashboard");
+        else if (role === "examiner") navigate ("/examiner/dashboard");
         else navigate ("/");
       } else {
         alert(data.error || "Login failed");
@@ -55,7 +56,7 @@ export default function Login({ onLogin }) {
             </div>
             <h1 className="text-2xl font-bold text-gray-800">PG Monitoring System</h1>
             <p className="text-gray-500 mt-2">
-              {role === "student" ? "Student Portal" : "Supervisor Portal"}
+              {role === "student" ? "Student Portal" : role === "supervisor" ? "Supervisor Portal" : "Examiner Portal"}
             </p>
           </div>
 
@@ -82,6 +83,17 @@ export default function Login({ onLogin }) {
               }`}
             >
               Supervisor
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole("examiner")}
+              className={`px-4 py-2 rounded-lg font-medium border transition ${
+                role === "examiner"
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+              }`}
+            >
+              Examiner
             </button>
           </div>
 
@@ -144,7 +156,7 @@ export default function Login({ onLogin }) {
             >
               {loading
                 ? "Signing in..."
-                : `Sign In as ${role === "student" ? "Student" : "Supervisor"}`}
+                : `Sign In as ${role === "student" ? "Student" : role === "supervisor" ? "Supervisor" : "Examiner"}`}
             </button>
           </form>
 

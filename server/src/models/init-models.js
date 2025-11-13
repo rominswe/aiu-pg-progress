@@ -1,4 +1,4 @@
-import _sequelize from "../config/db.js";
+import _sequelize from "sequelize";
 const DataTypes = _sequelize.DataTypes;
 import _empinfo from  "./empinfo.js";
 import _evaluation from  "./evaluation.js";
@@ -10,6 +10,7 @@ import _studinfo from  "./studinfo.js";
 import _supervisor from  "./Supervisor.js";
 import _supervisoryMeeting from  "./supervisoryMeeting.js";
 import _thesis from  "./thesis.js";
+import _submission from  "./Submission.js";
 
 export default function initModels(sequelize) {
   const empinfo = _empinfo.init(sequelize, DataTypes);
@@ -22,6 +23,7 @@ export default function initModels(sequelize) {
   const supervisor = _supervisor.init(sequelize, DataTypes);
   const supervisoryMeeting = _supervisoryMeeting.init(sequelize, DataTypes);
   const thesis = _thesis.init(sequelize, DataTypes);
+  const submission = _submission.init(sequelize, DataTypes);
 
   masterStu.belongsTo(studinfo, { as: "stu", foreignKey: "stu_id"});
   studinfo.hasMany(masterStu, { as: "master_stus", foreignKey: "stu_id"});
@@ -41,5 +43,6 @@ export default function initModels(sequelize) {
     supervisor,
     supervisoryMeeting,
     thesis,
+    submission,
   };
 }

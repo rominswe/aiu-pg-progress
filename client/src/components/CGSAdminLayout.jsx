@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileCheck, Users, Menu, X, LogOut, Bell, User } from 'lucide-react';
+import { LayoutDashboard, Users, BookOpen, Menu, X, LogOut, Bell, User, BarChart3 } from 'lucide-react';
 
-export default function SupervisorLayout({ children, onLogout }) {
+export default function CGSAdminLayout({ children, onLogout }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   const navigation = [
-    { name: 'Dashboard', href: '/supervisor/dashboard', icon: LayoutDashboard },
-    { name: 'Review Submissions', href: '/supervisor/review-submissions', icon: FileCheck },
-    { name: 'Student List', href: '/supervisor/students', icon: Users },
+    { name: 'Dashboard', href: '/cgs-admin/dashboard', icon: LayoutDashboard },
+    { name: 'Supervisors', href: '/cgs-admin/supervisors', icon: Users },
+    { name: 'Students', href: '/cgs-admin/students', icon: BookOpen },
+    { name: 'Analytics', href: '/cgs-admin/analytics', icon: BarChart3 },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -35,7 +36,7 @@ export default function SupervisorLayout({ children, onLogout }) {
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h1 className="text-xl font-bold text-gray-800">Supervisor Portal</h1>
+          <h1 className="text-xl font-bold text-gray-800">CGS Admin Portal</h1>
           <button
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden text-gray-600 hover:text-gray-800"
@@ -52,9 +53,10 @@ export default function SupervisorLayout({ children, onLogout }) {
               <Link
                 key={item.name}
                 to={item.href}
+                onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                   active
-                    ? 'bg-blue-50 text-blue-700 font-semibold'
+                    ? 'bg-purple-50 text-purple-700 font-semibold'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
@@ -95,12 +97,12 @@ export default function SupervisorLayout({ children, onLogout }) {
               </button>
 
               <div className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all cursor-pointer">
-                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
                   <User size={18} className="text-white" />
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-sm font-semibold text-gray-800">Dr. Sarah Johnson</p>
-                  <p className="text-xs text-gray-500">Supervisor</p>
+                  <p className="text-sm font-semibold text-gray-800">CGS Administrator</p>
+                  <p className="text-xs text-gray-500">Admin</p>
                 </div>
               </div>
             </div>

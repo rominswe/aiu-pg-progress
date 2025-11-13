@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FileText, CheckCircle, XCircle, Eye, Clock } from "lucide-react";
-import Card from "../../components/Card";
-import Button from "../../components/Button";
-import Modal from "../../components/Modal";
-import { submissions as initialSubmissions } from "../../data/supervisorData";
+import Card from "../../components/ui/Card";
+import Button from "../../components/ui/Button";
+import Modal from "../../components/ui/Modal";
+import axios from "axios";
+import { API_BASE_URL } from "../../config";
 
 export default function ReviewSubmissions() {
-  const [submissions, setSubmissions] = useState(initialSubmissions);
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [isEvaluationModalOpen, setIsEvaluationModalOpen] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
@@ -16,12 +19,30 @@ export default function ReviewSubmissions() {
     score: "",
   });
 
-  const handleStatusUpdate = (id, status) => {
-    setSubmissions(
-      submissions.map((sub) =>
-        sub.id === id ? { ...sub, status } : sub
-      )
-    );
+  useEffect(() => {
+    async function fetchSubmissions() {
+      try {
+        setLoading(true);
+        const res = await axios.get(`${API_BASE_URL}/submissions`);
+        setSubmissions(res.data);
+      } catch (err) {
+        setError(err.message || "Failed to load submissions");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchSubmissions();
+  }, []);
+
+  const handleStatusUpdate = async (id, status) => {
+    try {
+      await axios.patch(`${API_BASE_URL}/submissions/${id}`, { status });
+      setSubmissions((curr) =>
+        curr.map((sub) => (sub.id === id ? { ...sub, status } : sub))
+      );
+    } catch (err) {
+      alert("Failed to update status");
+    }
   };
 
   const openEvaluationModal = (submission) => {
@@ -65,6 +86,9 @@ export default function ReviewSubmissions() {
         return null;
     }
   };
+
+  if (loading) return <div>Loading submissions…</div>;
+  if (error) return <div className="text-red-600">Error: {error}</div>;
 
   return (
     <div className="space-y-6">

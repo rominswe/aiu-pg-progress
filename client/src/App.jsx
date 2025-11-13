@@ -1,11 +1,8 @@
-// src/App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-// Login Page
 import Login from "./components/login/Login";
-
-// Student pages
+import CGSAdminLogin from "./components/login/CGSAdminLogin";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./pages/student/Dashboard";
 import Uploads from "./pages/student/Uploads";
@@ -13,17 +10,20 @@ import ThesisSubmission from "./pages/student/ThesisSubmission";
 import ProgressUpdates from "./pages/student/ProgressUpdates";
 import Feedback from "./pages/student/Feedback";
 import Analytics from "./pages/student/Analytics";
-
-// Supervisor pages
 import SupervisorLayout from "./components/SupervisorLayout";
 import SupervisorDashboard from "./pages/supervisor/Dashboard";
 import StudentList from "./pages/supervisor/StudentList";
 import ReviewSubmissions from "./pages/supervisor/ReviewSubmissions";
+import ExaminerLayout from "./components/ExaminerLayout";
+import ExaminerDashboard from "./pages/examiner/Dashboard";
+import CGSAdminLayout from "./components/CGSAdminLayout";
+import CGSAdminDashboard from "./pages/cgs-admin/Dashboard";
+import SupervisorManagement from "./pages/cgs-admin/SupervisorManagement";
+import StudentManagement from "./pages/cgs-admin/StudentManagement";
+import CGSAnalytics from "./pages/cgs-admin/Analytics";
 
 function AppWrapper() {
   const navigate = useNavigate();
-
-  // Persistent login
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [role, setRole] = useState(null);
 
@@ -33,24 +33,31 @@ function AppWrapper() {
     if (token && storedRole) {
       setIsAuthenticated(true);
       setRole(storedRole);
+      // Redirect to appropriate dashboard if trying to access login
+      if (window.location.pathname === "/login" || window.location.pathname === "/") {
+        if (storedRole === "student") navigate("/student/dashboard");
+        else if (storedRole === "supervisor") navigate("/supervisor/dashboard");
+        else if (storedRole === "examiner") navigate("/examiner/dashboard");
+        else if (storedRole === "cgs-admin") navigate("/cgs-admin/dashboard");
+      }
     } else {
-      navigate("/login"); // redirect to login if not authenticated
+      if (!["/login", "/cgs-admin/login"].includes(window.location.pathname)) {
+        navigate("/login");
+      }
     }
   }, [navigate]);
 
-  // Callback from Login.jsx
   const handleLogin = (userRole) => {
     setIsAuthenticated(true);
     setRole(userRole);
   };
 
-  // Logout function
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     setIsAuthenticated(false);
     setRole(null);
-    navigate("/login"); // redirect after logout
+    navigate("/login");
   };
 
   return (
@@ -58,13 +65,16 @@ function AppWrapper() {
       <h1 className="text-3xl font-bold my-4">AIU PG Progress System</h1>
 
       <Routes>
-        {/* Login Route */}
         <Route
           path="/login"
           element={
             isAuthenticated ? (
               role === "supervisor" ? (
                 <Navigate to="/supervisor/dashboard" />
+              ) : role === "examiner" ? (
+                <Navigate to="/examiner/dashboard" />
+              ) : role === "cgs-admin" ? (
+                <Navigate to="/cgs-admin/dashboard" />
               ) : (
                 <Navigate to="/student/dashboard" />
               )
@@ -74,7 +84,17 @@ function AppWrapper() {
           }
         />
 
-        {/* Student Routes */}
+        <Route
+          path="/cgs-admin/login"
+          element={
+            isAuthenticated && role === "cgs-admin" ? (
+              <Navigate to="/cgs-admin/dashboard" />
+            ) : (
+              <CGSAdminLogin onLogin={handleLogin} />
+            )
+          }
+        />
+
         <Route
           path="/student"
           element={
@@ -92,10 +112,8 @@ function AppWrapper() {
           <Route path="progress-updates" element={<ProgressUpdates />} />
           <Route path="feedback" element={<Feedback />} />
           <Route path="analytics" element={<Analytics />} />
-        
         </Route>
 
-        {/* Supervisor Routes */}
         <Route
           path="/supervisor"
           element={
@@ -109,17 +127,46 @@ function AppWrapper() {
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<SupervisorDashboard />} />
           <Route path="students" element={<StudentList />} />
-          <Route path="review" element={<ReviewSubmissions />} />
+          <Route path="review-submissions" element={<ReviewSubmissions />} />
         </Route>
 
-        {/* Catch-all */}
+        <Route
+          path="/examiner"
+          element={
+            isAuthenticated && role === "examiner" ? (
+              <ExaminerLayout onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        >
+          <Route index element={<Navigate to="dashboard" />} />
+          <Route path="dashboard" element={<ExaminerDashboard />} />
+        </Route>
+
+        <Route
+          path="/cgs-admin"
+          element={
+            isAuthenticated && role === "cgs-admin" ? (
+              <CGSAdminLayout onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        >
+          <Route index element={<Navigate to="dashboard" />} />
+          <Route path="dashboard" element={<CGSAdminDashboard />} />
+          <Route path="supervisors" element={<SupervisorManagement />} />
+          <Route path="students" element={<StudentManagement />} />
+          <Route path="analytics" element={<CGSAnalytics />} />
+        </Route>
+
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </div>
   );
 }
 
-// Export wrapper
 export default function App() {
   return (
     <Router>
@@ -127,114 +174,3 @@ export default function App() {
     </Router>
   );
 }
-
-src/App.jsx
-// import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-// import { useState, useEffect } from "react";
-
-// // Login Page
-// import Login from "./components/login/Login";
-
-// // Student pages
-// import DashboardLayout from "./components/DashboardLayout";
-// import Dashboard from "./pages/student/Dashboard";
-// import Uploads from "./pages/student/Uploads";
-// import ThesisSubmission from "./pages/student/ThesisSubmission";
-// import ProgressUpdates from "./pages/student/ProgressUpdates";
-// import Feedback from "./pages/student/Feedback";
-// import Analytics from "./pages/student/Analytics";
-
-// // Supervisor pages
-// import SupervisorLayout from "./components/SupervisorLayout";
-// import SupervisorDashboard from "./pages/supervisor/Dashboard";
-// import StudentList from "./pages/supervisor/StudentList";
-// import ReviewSubmissions from "./pages/supervisor/ReviewSubmissions";
-
-// function AppWrapper() {
-//   // 🚧 Temporary developer login
-//   const [isAuthenticated, setIsAuthenticated] = useState(true);
-//   const [role, setRole] = useState("supervisor"); // change to "student" if you want to preview student layout
-
-//   // Fake login/logout for preview
-//   const handleLogin = (userRole) => {
-//     setIsAuthenticated(true);
-//     setRole(userRole);
-//   };
-
-//   const handleLogout = () => {
-//     setIsAuthenticated(false);
-//     setRole(null);
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-start">
-//       <h1 className="text-3xl font-bold my-4">AIU PG Progress System (Preview Mode)</h1>
-
-//       <Routes>
-//         {/* Login Route */}
-//         <Route
-//           path="/login"
-//           element={
-//             isAuthenticated ? (
-//               role === "supervisor" ? (
-//                 <Navigate to="/supervisor/dashboard" />
-//               ) : (
-//                 <Navigate to="/student/dashboard" />
-//               )
-//             ) : (
-//               <Login onLogin={handleLogin} />
-//             )
-//           }
-//         />
-
-//         {/* Student Routes */}
-//         <Route
-//           path="/student"
-//           element={
-//             isAuthenticated && role === "student" ? (
-//               <DashboardLayout onLogout={handleLogout} />
-//             ) : (
-//               <Navigate to="/login" />
-//             )
-//           }
-//         >
-//           <Route index element={<Navigate to="/student/dashboard" replace />} />
-//           <Route path="dashboard" element={<Dashboard />} />
-//           <Route path="uploads" element={<Uploads />} />
-//           <Route path="thesis-submission" element={<ThesisSubmission />} />
-//           <Route path="progress-updates" element={<ProgressUpdates />} />
-//           <Route path="feedback" element={<Feedback />} />
-//           <Route path="analytics" element={<Analytics />} />
-//         </Route>
-
-//         {/* Supervisor Routes */}
-//         <Route
-//           path="/supervisor"
-//           element={
-//             isAuthenticated && role === "supervisor" ? (
-//               <SupervisorLayout onLogout={handleLogout} />
-//             ) : (
-//               <Navigate to="/login" />
-//             )
-//           }
-//         >
-//           <Route index element={<Navigate to="dashboard" />} />
-//           <Route path="dashboard" element={<SupervisorDashboard />} />
-//           <Route path="students" element={<StudentList />} />
-//           <Route path="review-submissions" element={<ReviewSubmissions />} />
-//         </Route>
-
-//         {/* Catch-all */}
-//         <Route path="*" element={<Navigate to="/login" replace />} />
-//       </Routes>
-//     </div>
-//   );
-// }
-
-// export default function App() {
-//   return (
-//     <Router>
-//       <AppWrapper />
-//     </Router>
-//   );
-// }

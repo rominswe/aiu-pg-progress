@@ -13,6 +13,7 @@ import studinfoRoutes from "./routes/studinfoRoutes.js";
 import supervisorRoutes from "./routes/supervisorRoutes.js";
 import supervisoryMeetingRoutes from "./routes/supervisoryMeetingRoutes.js";
 import thesisRoutes from "./routes/thesisRoutes.js";
+import submissionRoutes from "./routes/submissionRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -35,5 +36,6 @@ app.use("/studentsinfo", studinfoRoutes);
 app.use("/supervisors", supervisorRoutes);
 app.use("/supervisory-meetings", supervisoryMeetingRoutes);
 app.use("/theses", thesisRoutes);
+app.use("/api/submissions", submissionRoutes);
 
 export default app;
