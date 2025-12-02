@@ -11,6 +11,7 @@ import CGSDashboard from "./pages/cgs/CGSDashboard";
 import CGSRegisterUsers from "./pages/cgs/CGSRegisterUsers";
 import CGSMonitoring from "./pages/cgs/CGSMonitoring";
 import CGSVerifyDocuments from "./pages/cgs/CGSVerifyDocuments";
+import LoginPage from "./pages/LoginPage";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,9 @@ const App = () => (
             <Route path="monitoring" element={<CGSMonitoring />} />
             <Route path="documents" element={<CGSVerifyDocuments />} />
           </Route>
+
+          {/* Login Page Route */}
+          <Route path="/login" element={<LoginPage />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
