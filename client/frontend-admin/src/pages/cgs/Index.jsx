@@ -36,7 +36,7 @@ export default function Index() {
             </div>
             <span className="text-xl font-bold text-foreground">CGS Portal</span>
           </div>
-          <Button onClick={() => navigate('/cgs/dashboard')}>
+          <Button onClick={() => navigate('/adminlogin')} variant="outline">
             Staff Login
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
@@ -53,10 +53,6 @@ export default function Index() {
           and verifying academic documents.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Button size="lg" onClick={() => navigate('/cgs/dashboard')}>
-            Access Staff Portal
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
         </div>
       </section>
 

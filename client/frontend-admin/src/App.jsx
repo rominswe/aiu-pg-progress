@@ -22,6 +22,7 @@ import CGSDashboard from "./pages/cgs/CGSDashboard";
 import CGSRegisterUsers from "./pages/cgs/CGSRegisterUsers";
 import CGSMonitoring from "./pages/cgs/CGSMonitoring";
 import CGSVerifyDocuments from "./pages/cgs/CGSVerifyDocuments";
+import CGSIndex from "./pages/cgs/Index";
 
 // QueryClient
 const queryClient = new QueryClient();
@@ -50,8 +51,8 @@ function AppWrapper() {
   }, []);
 
   useEffect(() => {
-  if (!loading && !isAuthenticated && location.pathname !== "/adminlogin" ) {
-    navigate("/adminlogin", { replace: true });
+  if (!loading && !isAuthenticated && location.pathname !== "/CGSIndex" ) {
+    navigate("/AdminLogin", { replace: true });
   }
 }, [loading, isAuthenticated, navigate, location.pathname]);
   
@@ -59,16 +60,16 @@ function AppWrapper() {
   const handleLogin = () => {
     localStorage.setItem("role", "cgs");
     setIsAuthenticated(true);
-    navigate("/cgs/dashboard"); {replace: true};
+    navigate("/cgs/dashboard", {replace: true});
   };
 
   // Logout function
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("role");
+    localStorage.removeItem("role",);
     setIsAuthenticated(false);
     setRole(null);
-    navigate("/adminlogin", {replace: ture} ) // redirect after logout
+    navigate("/CGSIndex", {replace: true} ) // redirect after logout
   };
 
    if (loading)
@@ -81,8 +82,11 @@ function AppWrapper() {
   return (
 
       <Routes>
+      {/* ===== Landing Pages ===== */}
+      <Route path="/CGSIndex" element={<CGSIndex />} />
+
       {/* ===== LOGIN PAGES ===== */}
-      <Route path="/adminlogin" element={<AdminLogin onLogin={handleLogin} />} />
+      <Route path="/AdminLogin" element={<AdminLogin onLogin={handleLogin} />} />
 
       {/* ===== CGS ===== */}
       <Route path="/cgs/*" element={
@@ -98,7 +102,7 @@ function AppWrapper() {
       </Route>
 
       {/* ===== FALLBACK ===== */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/CGSIndex" replace />} />
     </Routes>
   );
 }
