@@ -8,15 +8,30 @@ services:
     depends_on:
       - mysql
       - redis
+    networks:
+      - app-network
 
-  client:
-    build: ./client
+  frontend-user:
+    build: ./client/frontend-user
     ports:
       - "5173:5173"
     stdin_open: true
     tty: true
     depends_on:
       - server
+    networks:
+      - app-network
+
+  frontend-admin:
+    build: ./client/frontend-admin
+    ports:
+      - "5174:5174"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - server
+    networks:
+      - app-network
 
   mysql:
     image: mysql:8.0
@@ -34,6 +49,8 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    networks:
+      - app-network
 
   phpmyadmin:
     image: phpmyadmin:latest
