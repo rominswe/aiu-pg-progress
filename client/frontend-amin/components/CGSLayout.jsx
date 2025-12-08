@@ -12,14 +12,14 @@ import {
   ChevronDown,
   User,
 } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from './ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import { cn } from '../../lib/utils';
+} from './ui/dropdown-menu';
+import { cn } from '../lib/utils';
 
 const navigation = [
   { name: 'Dashboard', href: '/cgs/dashboard', icon: LayoutDashboard },

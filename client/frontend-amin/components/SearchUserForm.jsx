@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Label } from '../ui/label';
+import { Button } from './ui/button';
+import { Label } from './ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../ui/select';
-import { Input } from '../ui/input';
-import { mockUsers, DEPARTMENTS } from '../../data/mockUsers';
+} from './ui/select';
+import { Input } from './ui/input';
+import { mockUsers, DEPARTMENTS } from '../data/mockUsers';
 
 export default function SearchUserForm({ onSearch, isSearching }) {
   const [role, setRole] = useState('');

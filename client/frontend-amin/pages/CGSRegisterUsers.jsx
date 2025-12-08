@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { toast } from 'sonner';
 import SearchUserForm from '../../components/cgs/SearchUserForm';
 import UserDetailCard from '../../components/cgs/UserDetailCard';
 import ConfirmRegisterModal from '../../components/cgs/ConfirmRegisterModal';
-import { mockUsers } from '../../data/mockUsers';
+import { mockUsers } from '../data/mockUsers';
 import { Search, UserX } from 'lucide-react';
 
 export default function CGSRegisterUsers() {
