@@ -15,18 +15,19 @@ export default function AdminLogin({ onLogin }) {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/login/admin`, {
+      const res = await fetch(`${API_BASE_URL}/cgsadmin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
+      console.log("Buuuuu", data);
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("role", "cgs");
-        navigate("/admin/dashboard");
+        localStorage.setItem("role", data.role);
+        navigate("/cgs/dashboard");
       } else {
         alert(data.error || "Invalid Admin Credentials");
       }

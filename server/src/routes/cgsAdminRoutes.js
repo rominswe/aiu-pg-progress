@@ -1,12 +1,16 @@
 import express from 'express';
 import {
+  login,
   getAllAdmins,
     getAdminById,
     createAdmin,
     updateAdmin,
     deleteAdmin,
-} from '../controllers/cgAdminController.js';
+} from '../controllers/cgsAdminController.js';
 const router = express.Router();
+
+// Login route
+router.post("/login", login);
 
 // CRUD endpoints
 router.get('/', getAllAdmins);
