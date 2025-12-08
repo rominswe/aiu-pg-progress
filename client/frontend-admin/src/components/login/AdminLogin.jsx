@@ -48,7 +48,7 @@ export default function AdminLogin({ onLogin }) {
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center px-4"
-      style={{ backgroundImage: "url('/login-bg.jpg')" }}
+      style={{ backgroundImage: "url('/../../../../shared/utils/login-bg_1.jpg')" }}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
@@ -120,7 +120,7 @@ export default function AdminLogin({ onLogin }) {
           
           {/* Subtle Background Image */}
           <img
-            src="/aiu.jpg"
+            src="/../../../../shared/utils/aiu_1.jpg"
             alt="AIU Background"
             className="absolute inset-0 w-full h-full object-cover opacity-10 blur-sm" // Very subtle effect
           />
