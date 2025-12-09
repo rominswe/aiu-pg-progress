@@ -6,12 +6,12 @@ import { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // UI utilities (Toaster, Sonner, Tooltip)
-import { isTokenExpired } from "./utils/jwt";
-import { refreshToken, logout } from "./services/authService";
-import ProtectedRoute from "./components/login/ProtectedRoute";
+import { isTokenExpired } from "./services/jwt";
+// import { refreshToken, logout } from "./services/api";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Login Components
-import UserLogin from "./components/login/UserLogin";
+import UserLogin from "./components/auth/UserLogin";
 
 // Student pages
 import StudentLayout from "./components/student/StudentLayout";

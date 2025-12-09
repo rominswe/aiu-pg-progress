@@ -24,9 +24,6 @@ app.use(cors());
 app.use(express.json());
 app.use(logger);
 
-// Use auth routes
-app.use("/auth", authRoutes);
-
 // Use routes
 app.use("/empinfo", empinfoRoutes);
 app.use("/evaluation", evaluationRoutes);

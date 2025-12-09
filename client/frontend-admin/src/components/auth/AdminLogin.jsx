@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { UserCircle, CheckCircle, Lock } from "lucide-react"; // Added new icons
-import { API_BASE_URL } from "../../services/config";
+import { API_BASE_URL } from "../../services/api";
 
 export default function AdminLogin({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -10,18 +10,34 @@ export default function AdminLogin({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // async function handleSubmit(e) {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   try {
+  //     const data = await await.login({ email, password });
+
+  //     if (res.ok) {
+  //       localStorage.setItem("token", data.token);
+  //       localStorage.setItem("role", "cgs");
+  //       navigate("/admin/dashboard");
+  //     } else {
+  //       alert(data.error || "Invalid Admin Credentials");
+  //     }
+  //   } catch (err) {
+  //     console.error("Login error:", err);
+  //     alert("An error occurred. Please try again.");
+  //   } finally {
+  //     setLoading(false); 
+  //   }
+  // }
+  
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/login/admin`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
+      const data = await login({ email, password });
 
       if (res.ok) {
         localStorage.setItem("token", data.token);

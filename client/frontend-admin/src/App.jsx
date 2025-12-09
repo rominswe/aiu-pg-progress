@@ -9,20 +9,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/toaster";
 import { Toaster as Sonner } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
-import { isTokenExpired } from "./utils/jwt";
+import { isTokenExpired } from "./services/jwt";
 // import { refreshToken, logout } from "./services/authService";
-import ProtectedRoute from "./components/login/ProtectedRoute";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Login Components
-import AdminLogin from "./components/login/AdminLogin";
+import AdminLogin from "./components/auth/AdminLogin";
 
 // CGS Admin pages
 import CGSLayout from "./components/cgs/CGSLayout";
-import CGSDashboard from "./pages/cgs/CGSDashboard";
-import CGSRegisterUsers from "./pages/cgs/CGSRegisterUsers";
-import CGSMonitoring from "./pages/cgs/CGSMonitoring";
-import CGSVerifyDocuments from "./pages/cgs/CGSVerifyDocuments";
-import CGSIndex from "./pages/cgs/Index";
+import CGSDashboard from "./pages/CGSDashboard";
+import CGSRegisterUsers from "./pages/CGSRegisterUsers";
+import CGSMonitoring from "./pages/CGSMonitoring";
+import CGSVerifyDocuments from "./pages/CGSVerifyDocuments";
+import CGSIndex from "./pages/Index";
 
 // QueryClient
 const queryClient = new QueryClient();
