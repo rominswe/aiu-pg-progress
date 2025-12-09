@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // Import model factory functions
-import initMasterStu from "../models/masterstu.js";
+import initMasterStu from "../models/masterStu.js";
 import initSupervisor from "../models/supervisor.js";
 import initSuperVisoryMeetings from "../models/supervisorymeetings.js";
 import initCgsAdmin from "../models/cgsadmin.js";

@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { logger } from "./utils/logger.js";
 import authRoutes from "./routes/authRoutes.js";
-import empinfoRoutes from "./routes/empInfoRoutes.js";
+import empinfoRoutes from "./routes/empinfoRoutes.js";
 import evaluationRoutes from "./routes/evaluationRoutes.js";
 import masterStuRoutes from "./routes/masterStuRoutes.js";
 import programInfoRoutes from "./routes/programInfoRoutes.js";
