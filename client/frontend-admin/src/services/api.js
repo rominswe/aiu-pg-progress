@@ -19,8 +19,6 @@ api.interceptors.request.use(config => {
 export const authService = {
   login: async (role, credentials) => {
     const roleMap = {
-    student: "/masterstu/login",
-    supervisor: "/supervisors/login",
     cgs: "/cgsadmin/login"
     };
 

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { UserCircle, CheckCircle, Lock } from "lucide-react"; // Added new icons
-import { API_BASE_URL } from "../../services/api";
-import { authService } from "../../services/api";
+import { UserCircle, CheckCircle, Lock } from "lucide-react";
+import { API_BASE_URL } from "@/services/api";
+import { authService } from "@/services/api";
 
 export default function AdminLogin({ onLogin }) {
   const [email, setEmail] = useState("");

@@ -16,5 +16,5 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "**/*.js", "**/*.jsx"]
+  "include": ["src", "**/*.js", "**/*.jsx", "src/services"]
 }
