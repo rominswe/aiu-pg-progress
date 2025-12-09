@@ -3,6 +3,13 @@ import bcrypt from "bcrypt";
 import { signAccessToken, signRefreshToken } from "../utils/token.js";
 import jwt from "jsonwebtoken";
 
+const cookieOptions = (maxAge) => ({
+httpOnly: true,
+secure: process.env.NODE_ENV === 'production', // true in prod 
+sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // lax in dev
+maxAge
+});
+
 /* ================= STUDENT LOGIN ================= */
 export const studentLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -17,9 +24,10 @@ export const studentLogin = async (req, res) => {
     const accessToken = signAccessToken({ id: user.stu_id, role: "student" });
     const refreshToken = signRefreshToken({ id: user.stu_id, role: "student" });
 
-    res.json({
-      accessToken,
-      refreshToken,
+    res
+    .cookie('accessToken', accessToken, cookieOptions(60 * 60 * 1000))
+    .cookie('refreshToken', refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000))
+    .json({
       role: "student",
       user: { id: user.stu_id, name: user.Name }
     });
@@ -48,9 +56,10 @@ export const supervisorLogin = async (req, res) => {
     const accessToken = signAccessToken({ id: user.emp_id, role: "supervisor" });
     const refreshToken = signRefreshToken({ id: user.emp_id, role: "supervisor" });
 
-    res.json({
-      accessToken,
-      refreshToken,
+    res
+    .cookie('accessToken', accessToken, cookieOptions(60 * 60 * 1000))
+    .cookie('refreshToken', refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000))
+    .json({
       role: "supervisor",
       user: { id: user.emp_id, name: user.Name }
     });
@@ -80,9 +89,10 @@ export const cgsLogin = async (req, res) => {
     const accessToken = signAccessToken({ id: user.emp_id, role: "cgs" });
     const refreshToken = signRefreshToken({ id: user.emp_id, role: "cgs" });
 
-    res.json({
-      accessToken,
-      refreshToken,
+    res
+    .cookie('accessToken', accessToken, cookieOptions(60 * 60 * 1000))
+    .cookie('refreshToken', refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000))
+    .json({
       role: "cgs",
       user: { id: user.emp_id, name: user.Name }
     });
@@ -94,7 +104,7 @@ export const cgsLogin = async (req, res) => {
 };
 
 export const refreshToken = (req, res) => {
-  const { token } = req.body;
+  const token = req.cookies.refreshToken;
   if (!token) return res.status(401).json({ error: "No refresh token" });
 
   try {
@@ -103,12 +113,22 @@ export const refreshToken = (req, res) => {
       id: decoded.id,
       role: decoded.role
     });
-    res.json({ accessToken: newAccess });
+    res.cookie('accessToken', newAccess, cookieOptions(60 * 60 * 1000));
+    res.json({ success: true });
   } catch {
     res.status(403).json({ error: "Invalid refresh token" });
   }
 };
 
 export const logout = (req, res) => {
-  res.json({ message: "Logout success" });
+  res
+  .clearCookie('accessToken')
+  .clearCookie('refreshToken')
+  .json({ message: "Logout success" });
+};
+
+export const me = (req, res) => {
+  res.json({
+    user: req.user
+  });
 };

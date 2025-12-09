@@ -10,8 +10,8 @@ import { Toaster } from "./components/ui/toaster";
 import { Toaster as Sonner } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { isTokenExpired } from "./services/jwt";
-// import { refreshToken, logout } from "./services/authService";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import { authService } from "./services/api";
 
 // Login Components
 import AdminLogin from "./components/auth/AdminLogin";
@@ -31,47 +31,61 @@ function AppWrapper() {
   const navigate = useNavigate();
   const location = useLocation();
 
+
   // Persistent login
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true); // Block is render until check is done.
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const storedRole = localStorage.getItem("role");
-    
-    if (token && storedRole === "cgs" && !isTokenExpired(token)) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-      localStorage.removeItem("token");
-    }
-    setLoading(false);
+    authService.me()
+      .then((data) => {
+        if (data.user && data.user.role === "cgs") {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      })
+      .catch(() => setIsAuthenticated(false))
+      .finally(() => setLoading(false));
   }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   const storedRole = localStorage.getItem("role");
+    
+  //   if (token && storedRole === 'cgs' && !isTokenExpired(token)) {
+  //     setIsAuthenticated(true);
+  //     setRole(storedRole);
+  //   } else {
+  //     setIsAuthenticated(false);
+  //     setRole(null);
+  //   }
+  //   setLoading(false);
+  // }, []);
 
   useEffect(() => {
-    const publicRoutes = ["/cgsindex", "/adminlogin"];
-    if (!loading && !isAuthenticated && !publicRoutes.includes(location.pathname.toLowerCase())) {
-      navigate("/cgsindex", { replace: true });
-    }
+    const publicRoutes = ["/index", "/login"];
+    if (!loading) {
+      if (!isAuthenticated && !publicRoutes.includes(location.pathname.toLowerCase())) {
+        navigate("/index", { replace: true });
+      }
 
-    if (isAuthenticated && location.pathname === "/adminlogin") {
-      navigate("/cgs/dashboard", { replace: true });
+      // if (isAuthenticated && location.pathname === "/login") {
+      //   navigate("/cgs/dashboard", { replace: true });
+      // }
     }
-
-}, [loading, isAuthenticated, navigate, location.pathname]);
+  }, [loading, isAuthenticated, navigate, location.pathname]);
   
   // Callback from Login.jsx
   const handleLogin = () => {
-    localStorage.setItem("role", "cgs");
     setIsAuthenticated(true);
-    navigate("/cgs/dashboard", {replace: true});
+    navigate("/cgs/dashboard", { replace: true });
   };
 
   // Logout function
-  const handleLogout = () => {
-    localStorage.clear();
+  const handleLogout = async () => {
+    await authService.logout(); // Call backend to clear cookies
     setIsAuthenticated(false);
-    navigate("/CGSIndex", {replace: true} ) // redirect after logout
+    navigate("/index", { replace: true });
   };
 
    if (loading)
@@ -85,10 +99,10 @@ function AppWrapper() {
 
       <Routes>
       {/* ===== Landing Pages ===== */}
-      <Route path="/cgsindex" element={<CGSIndex />} />
+      <Route path="/index" element={<CGSIndex />} />
 
       {/* ===== LOGIN PAGES ===== */}
-      <Route path="/adminlogin" element={<AdminLogin onLogin={handleLogin} />} />
+      <Route path="/login" element={<AdminLogin onLogin={handleLogin} />} />
 
       {/* ===== CGS ===== */}
       <Route path="/cgs/*" element={
@@ -104,7 +118,7 @@ function AppWrapper() {
       </Route>
 
       {/* ===== FALLBACK ===== */}
-      <Route path="/cgs/*" element={<Navigate to="/cgsindex" replace />} />
+      <Route path="*" element={<Navigate to="/index" replace />} />
     </Routes>
   );
 }

@@ -2,8 +2,10 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { UserCircle, CheckCircle, Lock } from "lucide-react";
-import { API_BASE_URL } from "@/services/api";
-import { authService } from "@/services/api";
+// import { API_BASE_URL } from "@/services/api";
+// import { authService } from "@/services/api";
+
+import { useAuth } from "./AuthContext";
 
 export default function AdminLogin({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -11,29 +13,21 @@ export default function AdminLogin({ onLogin }) {
   const [loading, setLoading] = useState(false);
   const role = "cgs"; 
   const navigate = useNavigate();
+  const {login} = useAuth();
   
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const data = await authService.login(role, { email, password});
+      const data = await login(role, { email, password });
 
       console.log("Login response:", data);
 
-      if (data.accessToken) {
-        localStorage.setItem("token", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        localStorage.setItem("role", data.role);
-
-        if (onLogin) onLogin("cgs");
         if (role === "cgs") navigate("/cgs/dashboard");
-        else
-        navigate("/");
-      } else {
-        alert(data.error || "Invalid Credentials");
-      }
-    } catch (err) {
+        else navigate("/index");
+      
+      } catch (err) {
       // console.error("Login error:", err);
       console.error("Login Error:", err.response?.data || err.message);
       alert(err.response?.data?.error || "Login failed");

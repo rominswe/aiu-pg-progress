@@ -36,7 +36,7 @@ export default function Index() {
             </div>
             <span className="text-xl font-bold text-foreground">CGS Portal</span>
           </div>
-          <Button onClick={() => navigate('/adminlogin')} variant="outline">
+          <Button onClick={() => navigate('/login')} variant="outline">
             Staff Login
             <ArrowRight className="ml-2 h-4 w-4" />
           </Button>

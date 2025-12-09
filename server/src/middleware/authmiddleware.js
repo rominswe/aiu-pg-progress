@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export const protect = (roles = []) => (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token = req.cookies.accessToken;
   if (!token) return res.status(401).json({ error: "No token" });
 
   try {

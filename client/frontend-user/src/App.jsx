@@ -33,11 +33,11 @@ const queryClient = new QueryClient();
 
 function AppWrapper() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Persistent login
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [role, setRole] = useState(null);
-  const location = useLocation();
   const [loading, setLoading] = useState(true); // Block is render until check is done.
 
   useEffect(() => {
@@ -84,11 +84,9 @@ function AppWrapper() {
 
   // Logout function
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
     setIsAuthenticated(false);
     setRole(null);
-    navigate("/login"); // redirect after logout
+    navigate("/login", {replace: true}); // redirect after logout
   };
 
    if (loading)

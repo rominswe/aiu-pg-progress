@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import { logger } from "./utils/logger.js";
 import authRoutes from "./routes/authRoutes.js";
 import empinfoRoutes from "./routes/empinfoRoutes.js";
@@ -19,12 +20,27 @@ import cgsadminRoutes from "./routes/cgsAdminRoutes.js";
 
 dotenv.config();
 const app = express();
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
 
-app.use(cors());
+app.use(
+    cors({
+        origin: function (origin, callback){
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS policy: This origin is not allowed"));
+      }
+    }, 
+        credentials: true
+    }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(logger);
 
 // Use routes
+app.use("/", authRoutes);
 app.use("/empinfo", empinfoRoutes);
 app.use("/evaluation", evaluationRoutes);
 app.use("/masterstu", masterStuRoutes);

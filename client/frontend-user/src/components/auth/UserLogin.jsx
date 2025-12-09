@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Users, CheckCircle } from "lucide-react"; // Changed FileText to Users/CheckCircle
-import { API_BASE_URL } from "../../services/api";
-import { authService } from "../../services/api";
+// import { API_BASE_URL } from "../../services/api";
+// import { authService } from "../../services/api";
+import { useAuth } from "./AuthContext";
 
 export default function userLogin({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -11,33 +12,25 @@ export default function userLogin({ onLogin }) {
   const [role, setRole] = useState("student");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const {login} = useAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const data = await authService.login(role, { email, password});
-      
-      
+      const data = await login(role, { email, password });
 
-      if (data.accessToken) {
-        localStorage.setItem("token", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        localStorage.setItem("role", data.role);
-        
         if (onLogin) onLogin(role);
 
         // Redirect based on role
         if (role === "student") navigate("/student/dashboard");
         else if (role === "supervisor") navigate("/supervisor/dashboard");
         else navigate("/");
-      } else {
-        alert(data.error || "Invalid credentials");
-      }
+
     } catch (err) {
-  console.error("Login Error:", err.response?.data || err.message);
-  alert(err.response?.data?.error || "Login failed");
+      console.error("Login Error:", err.response?.data || err.message);
+      alert(err.response?.data?.error || "Login failed");
 }finally {
       setLoading(false); 
     }
